@@ -10,8 +10,8 @@ contract VolcanoCoin {
     mapping(address => Payment[]) record;
     event supplyChanged(uint256);
 
-    event Log(uint256);
-    event LogMessage(string);
+    event TransferEvent(uint256);
+    //event TransferEventMessage(string);
 
     constructor() {
         supply = 10000;
@@ -50,17 +50,17 @@ contract VolcanoCoin {
     function transfer(address recipient, uint256 amount) public {
         uint256 balanceDebit = balance[msg.sender];
         uint256 balanceCredit = balance[recipient];
-        if (balanceDebit >= amount) {
-            balance[msg.sender] = balanceDebit - amount;
-            balance[recipient] = balanceCredit + amount;
-
-            Payment[] storage recordUser = record[recipient];
-            recordUser.push(Payment({recipient: msg.sender, amount: amount}));
-            record[recipient] = recordUser;
-            emit Log(balance[recipient]);
-        } else {
-            emit LogMessage("Insuficient funds");
-        }
+        require(balanceDebit >= amount, "Insuficient Founds");
+        //if (balanceDebit >= amount) {
+        balance[msg.sender] = balanceDebit - amount;
+        balance[recipient] = balanceCredit + amount;
+        Payment[] storage recordUser = record[recipient];
+        recordUser.push(Payment({recipient: msg.sender, amount: amount}));
+        record[recipient] = recordUser;
+        emit TransferEvent(balance[msg.sender]);
+        //} else {
+        //    emit TransferEventMessage("Insuficient funds");
+        //}
     }
 
     function getRecord(address user) public view returns (Payment[] memory) {

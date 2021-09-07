@@ -4,7 +4,7 @@ import volcanoCoinArtifact from "../../build/contracts/VolcanoCoin.json";
 const App = {
   web3: null,
   account: null,
-  meta: null,
+  volcanoCoin: null,
 
   start: async function() {
     const { web3 } = this;
@@ -14,7 +14,7 @@ const App = {
       const networkId = await web3.eth.net.getId();
       console.log("NetworkId",networkId);
       const deployedNetwork = volcanoCoinArtifact.networks[networkId];
-      this.meta = new web3.eth.Contract(
+      this.volcanoCoin = new web3.eth.Contract(
         volcanoCoinArtifact.abi,
         deployedNetwork.address,
       );
@@ -23,6 +23,26 @@ const App = {
       const accounts = await web3.eth.getAccounts();
       this.account = accounts[0];
 
+      this.volcanoCoin.events.TransferEvent({})
+        .on('data', function(event){
+            console.log(event.returnValues);
+            console.log("Evento");
+            // Do something here
+        })
+        .on('changed', changed => console.log("changed",changed))
+        .on('connected', str => console.log("connected",str))
+        .on('error', console.error);
+
+      this.volcanoCoin.events.supplyChanged({})
+        .on('data', function(event){
+            console.log(event.returnValues);
+            console.log("Evento");
+            // Do something here
+        })
+        .on('changed', changed => console.log("changed",changed))
+        .on('connected', str => console.log("connected",str))
+        .on('error', console.error);
+
       this.refreshBalance();
     } catch (error) {
       console.error("Could not connect to contract or chain.");
@@ -30,8 +50,8 @@ const App = {
   },
 
   refreshBalance: async function() {
-    console.log(this.meta.methods);
-    const { getBalanceUser } = this.meta.methods;
+    console.log(this.volcanoCoin.methods);
+    const { getBalanceUser } = this.volcanoCoin.methods;
     const balance = await getBalanceUser(this.account).call();
 
     const balanceElement = document.getElementsByClassName("balance")[0];
@@ -46,11 +66,18 @@ const App = {
 
     this.setStatus("Initiating transaction... (please wait)");
 
-    const { transfer } = this.meta.methods;
+    const { transfer } = this.volcanoCoin.methods;
     await transfer(receiver, amount).send({ from: this.account });
 
     this.setStatus("Transaction complete!");
     this.refreshBalance();
+  },
+
+  increaseSupply: async function(){
+    const { owner, supply, _increaseSupply } = this.volcanoCoin.methods;
+    await _increaseSupply().call();
+    console.log("owner", await owner().call());
+    console.log("supply", await supply().call());
   },
 
   setStatus: function(message) {
@@ -63,7 +90,7 @@ window.App = App;
 
 window.addEventListener("load", function() {
   if (window.ethereum) {
-    // use MetaMask's provider
+    // use volcanoCoinMask's provider
     App.web3 = new Web3(window.ethereum);
     window.ethereum.enable(); // get permission to access accounts
   } else {
