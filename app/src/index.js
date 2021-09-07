@@ -9,15 +9,10 @@ const App = {
   start: async function() {
     const { web3 } = this;
 
-    if (window.ethereum) { 
-        App.web3 = new Web3(window.ethereum); 
-    } else {
-        App.web3 = new Web3( new Web3.providers.HttpProvider("127.0.0.1:9545"));
-    }
-
     try {
       // get contract instance
       const networkId = await web3.eth.net.getId();
+      console.log("NetworkId",networkId);
       const deployedNetwork = volcanoCoinArtifact.networks[networkId];
       this.meta = new web3.eth.Contract(
         volcanoCoinArtifact.abi,
@@ -35,11 +30,14 @@ const App = {
   },
 
   refreshBalance: async function() {
-    const { getBalance } = this.meta.methods;
+    console.log(this.meta.methods);
+    const { getBalanceUser } = this.meta.methods;
     const balance = await getBalanceUser(this.account).call();
 
     const balanceElement = document.getElementsByClassName("balance")[0];
+    const accountElement = document.getElementsByClassName("accountId")[0];
     balanceElement.innerHTML = balance;
+    accountElement.innerHTML = this.account;
   },
 
   sendCoin: async function() {
