@@ -10,7 +10,7 @@ contract VolcanoCoin {
     mapping(address => Payment[]) record;
     event supplyChanged(uint256);
 
-    event TransferEvent(uint256);
+    event TransferEvent(address, address, uint256);
     //event TransferEventMessage(string);
 
     constructor() {
@@ -57,7 +57,7 @@ contract VolcanoCoin {
         Payment[] storage recordUser = record[recipient];
         recordUser.push(Payment({recipient: msg.sender, amount: amount}));
         record[recipient] = recordUser;
-        emit TransferEvent(balance[msg.sender]);
+        emit TransferEvent(msg.sender, recipient, amount);
         //} else {
         //    emit TransferEventMessage("Insuficient funds");
         //}

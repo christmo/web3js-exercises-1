@@ -22,12 +22,22 @@ const App = {
       // get accounts
       const accounts = await web3.eth.getAccounts();
       this.account = accounts[0];
+      document.tx ={ from: this.account};
 
       this.volcanoCoin.events.TransferEvent({})
         .on('data', function(event){
-            console.log(event.returnValues);
-            console.log("Evento");
-            // Do something here
+            let sender = event.returnValues[0];
+            let recipient = event.returnValues[1];
+            let amount = event.returnValues[2];
+            const eventElement = document.getElementsByClassName("event")[0];
+            console.log(document.tx.from, sender, recipient);
+            let text = "";
+            if(document.tx.from == sender){
+                text = " transferred ";
+            } else {
+                text = " received ";
+            }
+            eventElement.innerHTML = "You have"+text + amount;
         })
         .on('changed', changed => console.log("changed",changed))
         .on('connected', str => console.log("connected",str))
@@ -36,8 +46,6 @@ const App = {
       this.volcanoCoin.events.supplyChanged({})
         .on('data', function(event){
             console.log(event.returnValues);
-            console.log("Evento");
-            // Do something here
         })
         .on('changed', changed => console.log("changed",changed))
         .on('connected', str => console.log("connected",str))
@@ -45,12 +53,12 @@ const App = {
 
       this.refreshBalance();
     } catch (error) {
-      console.error("Could not connect to contract or chain.");
+      console.error("Could not connect to contract or chain.", error);
     }
   },
 
   refreshBalance: async function() {
-    console.log(this.volcanoCoin.methods);
+    //console.log(this.volcanoCoin.methods);
     const { getBalanceUser } = this.volcanoCoin.methods;
     const balance = await getBalanceUser(this.account).call();
 
@@ -67,15 +75,15 @@ const App = {
     this.setStatus("Initiating transaction... (please wait)");
 
     const { transfer } = this.volcanoCoin.methods;
-    await transfer(receiver, amount).send({ from: this.account });
-
+    let tx = await transfer(receiver, amount).send({ from: this.account });
     this.setStatus("Transaction complete!");
     this.refreshBalance();
   },
 
   increaseSupply: async function(){
     const { owner, supply, _increaseSupply } = this.volcanoCoin.methods;
-    await _increaseSupply().call();
+    let supplyTx = await _increaseSupply().send({ from: this.account });
+    //console.log(supplyTx)
     console.log("owner", await owner().call());
     console.log("supply", await supply().call());
   },
