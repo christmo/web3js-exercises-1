@@ -1,3 +1,11 @@
+require('dotenv').config()
+const HDWalletProvider = require('truffle-hdwallet-provider')
+const MNEMONIC = process.env.MNEMONIC
+const ROPSTEN_URL = process.env.ROPSTEN_URL
+const KOVAN_URL = process.env.KOVAN_URL
+const RINKEBY_URL = process.env.RINKEBY_URL
+const MAINNET_URL = process.env.MAINNET_URL
+
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
@@ -51,6 +59,24 @@ module.exports = {
     develop: {
       port: 8545
     },
+
+    ropsten: {
+        provider: () => new HDWalletProvider(MNEMONIC, ROPSTEN_URL),
+        network_id: 3
+    },
+    kovan: {
+        provider: () => new HDWalletProvider(MNEMONIC, KOVAN_URL),
+        network_id: 42
+    },
+    rinkeby: {
+        provider: () => new HDWalletProvider(MNEMONIC, RINKEBY_URL),
+        network_id: 4
+    },
+    // main ethereum network(mainnet)
+    mainnet: {
+        provider: () => new HDWalletProvider(MNEMONIC, MAINNET_URL),
+        network_id: 1
+    }
 
     // Another network with more advanced options...
     // advanced: {

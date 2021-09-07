@@ -31,3 +31,12 @@ cd app
 npm run dev
 ```
 
+# Contract
+
+https://rinkeby.etherscan.io/address/0x8d1978c9afff244d50a7d8f5244eba952295f7f8
+
+# Infura.io Configuration
+
+https://nhancv.medium.com/deploy-smart-contract-with-truffle-79d2bf218332
+
+
