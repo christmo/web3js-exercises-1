@@ -11,7 +11,6 @@ contract VolcanoCoin {
     event supplyChanged(uint256);
 
     event TransferEvent(address, address, uint256);
-    //event TransferEventMessage(string);
 
     constructor() {
         supply = 10000;
@@ -51,16 +50,13 @@ contract VolcanoCoin {
         uint256 balanceDebit = balance[msg.sender];
         uint256 balanceCredit = balance[recipient];
         require(balanceDebit >= amount, "Insuficient Founds");
-        //if (balanceDebit >= amount) {
+
         balance[msg.sender] = balanceDebit - amount;
         balance[recipient] = balanceCredit + amount;
         Payment[] storage recordUser = record[recipient];
         recordUser.push(Payment({recipient: msg.sender, amount: amount}));
         record[recipient] = recordUser;
         emit TransferEvent(msg.sender, recipient, amount);
-        //} else {
-        //    emit TransferEventMessage("Insuficient funds");
-        //}
     }
 
     function getRecord(address user) public view returns (Payment[] memory) {

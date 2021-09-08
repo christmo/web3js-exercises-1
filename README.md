@@ -1,6 +1,18 @@
 # web3js-exercises-1
 Encode Academy - Web 3 Exercise 1 - Webpack VolcanoCoin
 
+# Install
+1. ```npm i````
+2. update and create file .env in the root
+```.env
+MNEMONIC="twelve words of wallet ... metamask"
+ROPSTEN_URL=https://ropsten.infura.io/v3/<infura.io token>
+KOVAN_URL=https://kovan.infura.io/v3/<infura.io token>
+RINKEBY_URL=https://rinkeby.infura.io/v3/<infura.io token>
+MAINNET_URL=https://mainnet.infura.io/v3/<infura.io token>
+```
+3. truffle console --network=rinkeby
+4. compile
 
 # Steps
 
