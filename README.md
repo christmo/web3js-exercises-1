@@ -2,7 +2,7 @@
 Encode Academy - Web 3 Exercise 1 - Webpack VolcanoCoin
 
 # Install
-1. ```npm i````
+1. ```npm i```
 2. update and create file .env in the root
 ```.env
 MNEMONIC="twelve words of wallet ... metamask"
